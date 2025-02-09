@@ -424,10 +424,33 @@ class JoyCon:
             b'\x01', b'\x30',
             ((flashing_pattern & 0xF) << 4).to_bytes(1, byteorder='little'))
 
-    def set_player_lamp(self, pattern: int):
-        self._write_output_report(
-            b'\x01', b'\x30',
-            pattern.to_bytes(1, byteorder='little'))
+     def set_player_lamp(self, player_number: int):
+            binaryPattern = 1
+            # Determine the binary based on the input number
+            if player_number == 1:
+                binaryPattern = 1    # 0001
+            elif player_number == 2:
+                binaryPattern = 3    # 0011
+            elif player_number == 3:
+                binaryPattern = 7    # 0111
+            elif player_number == 4:
+                binaryPattern = 15   # 1111
+            elif player_number == 5:
+                binaryPattern = 9    # 1001
+            elif player_number == 6:
+                binaryPattern = 10   # 1010
+            elif player_number == 7:
+                binaryPattern = 11   # 1011  
+            elif player_number == 8:
+                binaryPattern = 6    # 0110
+            else:
+                raise ValueError("Invalid player number. Must be between 1 and 8.")
+    
+            # Write the output report with the determined byte pattern
+            self._write_output_report(
+                b'\x01', b'\x30',
+                binaryPattern.to_bytes(1, byteorder='little')
+            )
 
     def disconnect_device(self):
         self._write_output_report(b'\x01', b'\x06', b'\x00')
